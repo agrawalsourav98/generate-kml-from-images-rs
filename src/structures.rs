@@ -1,7 +1,7 @@
 use clap::ValueEnum;
-use std::fmt::{self};
+use log::trace;
+use std::fmt::{self, Display};
 
-#[repr(usize)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 pub enum LogLevel {
     ///Off
@@ -20,8 +20,6 @@ pub enum LogLevel {
 
 impl fmt::Display for LogLevel {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        //write!(f, "{:?}", self)
-        // or, alternatively:
         fmt::Debug::fmt(self, f)
     }
 }
@@ -35,11 +33,7 @@ pub enum GPSInformationField {
 
 impl fmt::Display for GPSInformationField {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            GPSInformationField::Char(data) => data.fmt(f),
-            GPSInformationField::Float(data) => data.fmt(f),
-            GPSInformationField::Int(data) => data.fmt(f),
-        }
+        fmt::Debug::fmt(self, f)
     }
 }
 
@@ -70,30 +64,32 @@ impl GPSInformation {
             3 => &self.latitude_ref,
             4 => &self.longitude,
             5 => &self.longitude_ref,
-            _ => panic!("unknown field: {}", i),
+            _ => panic!("unknown field requested: {}", i),
         }
     }
     pub fn get_param(&self, param: &str) -> String {
         match param {
             "alt" | "altitude" => {
-                return format!("{:.2}", self.altitude);
+                format!("{:.2}", self.altitude)
             }
             "lat" | "latitude" => {
                 if self.latitude_ref == GPSInformationField::Char('E') {
-                    return format!("-{:.6}", self.latitude);
+                    format!("-{:.6}", self.latitude)
+                } else {
+                    format!("{:.6}", self.latitude)
                 }
-                return format!("{:.6}", self.latitude);
             }
             "lon" | "longitude" => {
                 if self.longitude_ref == GPSInformationField::Char('S') {
-                    return format!("-{:.6}", self.longitude);
+                    format!("-{:.6}", self.longitude)
+                } else {
+                    format!("{:.6}", self.longitude)
                 }
-                return format!("{:.6}", self.longitude);
             }
-            _ => panic!("unknown field: {}", param),
+            _ => panic!("unknown field requested: {}", param),
         }
     }
-    pub fn set(&mut self, i: &usize, value: GPSInformationField) {
+    pub fn set_index(&mut self, i: &usize, value: GPSInformationField) {
         match i {
             0 => self.altitude = value,
             1 => self.altitude_ref = value,
@@ -110,11 +106,13 @@ impl GPSInformation {
         for m in self.modified[2..6].iter() {
             valid &= m;
         }
-        return valid;
+        trace!(
+            "Checking validity, modified array: {:?}, Valid: {}",
+            self.modified,
+            valid
+        );
+        valid
     }
-}
-
-impl GPSInformation {
     pub fn new() -> Self {
         Default::default()
     }
@@ -136,8 +134,48 @@ impl Default for GPSInformation {
 
 impl fmt::Display for GPSInformation {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        //write!(f, "{:?}", self)
-        // or, alternatively:
         fmt::Debug::fmt(self, f)
+    }
+}
+
+#[allow(clippy::enum_variant_names)]
+#[derive(Debug)]
+pub enum Error {
+    IoError(std::io::Error),
+    ExifReadError(exif::Error),
+    QuickXMLError(quick_xml::Error),
+    LoggerError(log::SetLoggerError),
+}
+
+impl Display for Error {
+    // 3
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+
+impl std::error::Error for Error {}
+
+impl From<std::io::Error> for Error {
+    fn from(error: std::io::Error) -> Self {
+        Error::IoError(error)
+    }
+}
+
+impl From<exif::Error> for Error {
+    fn from(error: exif::Error) -> Self {
+        Error::ExifReadError(error)
+    }
+}
+
+impl From<quick_xml::Error> for Error {
+    fn from(error: quick_xml::Error) -> Self {
+        Error::QuickXMLError(error)
+    }
+}
+
+impl From<log::SetLoggerError> for Error {
+    fn from(error: log::SetLoggerError) -> Self {
+        Error::LoggerError(error)
     }
 }
