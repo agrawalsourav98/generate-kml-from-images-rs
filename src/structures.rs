@@ -33,7 +33,11 @@ pub enum GPSInformationField {
 
 impl fmt::Display for GPSInformationField {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Debug::fmt(self, f)
+        match self {
+            GPSInformationField::Char(data) => data.fmt(f),
+            GPSInformationField::Float(data) => data.fmt(f),
+            GPSInformationField::Int(data) => data.fmt(f),
+        }
     }
 }
 
