@@ -83,7 +83,7 @@ pub fn generate_kml_from_images(images: &[String], filename: &str) -> Result<(),
         let description = format!(
             "<p><b>Filename:</b> {}</p>
             <p><b>Longitude:</b> {}</p>
-            <p><b>Lotitude:</b> {}</p>
+            <p><b>Latitude:</b> {}</p>
             <p><b>Altitude:</b> {}</p>",
             file_name!(image),
             longitude,

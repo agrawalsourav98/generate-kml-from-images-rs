@@ -77,14 +77,20 @@ impl GPSInformation {
                 format!("{:.2}", self.altitude)
             }
             "lat" | "latitude" => {
-                if self.latitude_ref == GPSInformationField::Char('E') {
+                trace!("Getting latitude {} {}", self.latitude, self.latitude_ref);
+                if self.latitude_ref == GPSInformationField::Char('S') {
                     format!("-{:.6}", self.latitude)
                 } else {
                     format!("{:.6}", self.latitude)
                 }
             }
             "lon" | "longitude" => {
-                if self.longitude_ref == GPSInformationField::Char('S') {
+                trace!(
+                    "Getting longitude {} {}",
+                    self.longitude,
+                    self.longitude_ref
+                );
+                if self.longitude_ref == GPSInformationField::Char('W') {
                     format!("-{:.6}", self.longitude)
                 } else {
                     format!("{:.6}", self.longitude)
