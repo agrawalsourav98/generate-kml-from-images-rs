@@ -6,7 +6,7 @@ edition = "2021"
 description = "Generate a kml for a list of images with GPS information"
 repository = "https://github.com/agrawalsourav98/generate-kml-from-images-rs.git"
 readme = "README.md"
-license-file = "LICENSE"
+license = "MIT"
 keywords = ["kml","exif"]
 categories = ["command-line-utilities"]
 
