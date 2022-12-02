@@ -69,14 +69,14 @@ pub fn get_images_from_paths(image_paths: &[String]) -> Vec<String> {
             for image_p in paths {
                 let p = image_p.unwrap().path();
                 if check_if_path_is_image(&p) {
-                    trace!("Found valid image file {}", path_to_string!(&p));
+                    trace!("Found valid image file {}", file_name!(&p));
                     images.push(path_to_string!(p).to_string());
                 } else {
-                    trace!("Skipping non-image file {}", path_to_string!(&p))
+                    trace!("Skipping non-image file {}", file_name!(&p))
                 }
             }
         } else {
-            trace!("Adding image {}", path_to_string!(&path));
+            trace!("Adding image {}", file_name!(&path));
             images.push(path_to_string!(path).to_string());
         }
     }
