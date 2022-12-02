@@ -1,12 +1,14 @@
 [package]
 name = "generate-kml-for-images"
-authors = ["Sourav Agrawal"]
-version = "0.1.0"
+authors = ["Sourav Agrawal <agrawalsourav98@gmail.com>"]
+version = "0.1.1"
 edition = "2021"
-about = "Generate a kml for a list of images with GPS information"
+description = "Generate a kml for a list of images with GPS information"
+repository = "https://github.com/agrawalsourav98/generate-kml-from-images-rs.git"
 readme = "README.md"
 license-file = "LICENSE"
-categories = ["command-line-utilities","kml","exif"]
+keywords = ["kml","exif"]
+categories = ["command-line-utilities"]
 
 [dependencies]
 quick-xml = "0.26.0"
