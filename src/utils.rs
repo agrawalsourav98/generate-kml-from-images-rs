@@ -81,6 +81,8 @@ pub fn get_images_from_paths(image_paths: &[String]) -> Vec<String> {
         }
     }
 
+    images.sort();
+
     images
 }
 
